@@ -4,7 +4,7 @@ public static class SpatialSearch
 {
     public static void Main()
     {
-        Console.WriteLine("Hello world");
+        var linear = new LinearSearch();
+        linear.ShowList();
     }
 }
-

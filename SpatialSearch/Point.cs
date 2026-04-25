@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace SpatialSearch;
 
 public class Point
@@ -8,8 +10,8 @@ public class Point
     public Point(List<string> entries)
     {
         if (entries.Count >= 2 && 
-        double.TryParse(entries[0], out double latitude) &&
-        double.TryParse(entries[1], out double longitude))
+        double.TryParse(entries[0], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture,  out double latitude) &&
+        double.TryParse(entries[1], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out double longitude))
         {
             Latitude = latitude;
             Longitude = longitude;
@@ -42,6 +44,6 @@ public class Point
 
     public override int GetHashCode()
     {
-        return GetHashCode.Combine(Latitude, Longitude);
+        return HashCode.Combine(Latitude, Longitude);
     }
 }
