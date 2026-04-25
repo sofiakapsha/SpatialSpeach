@@ -7,7 +7,18 @@ public class Point
     
     public Point(List<string> entries)
     {
-        throw new NotImplementedException();
+        if (entries.Count >= 2 && 
+        double.TryParse(entries[0], out double latitude) &&
+        double.TryParse(entries[1], out double longitude))
+        {
+            Latitude = latitude;
+            Longitude = longitude;
+        }
+
+        else
+        {
+            throw new ArgumentException("Invalid entries.");
+        }
     }
     
     public Point(double latitude, double longitude)
@@ -18,16 +29,19 @@ public class Point
     
     public override string ToString()
     {
-        throw new NotImplementedException();
+        return $"latitude: {Latitude} | longtitude: {Longitude}";
     }
 
     public override bool Equals(object? obj)
     {
-        throw new NotImplementedException();
+        if (obj is not Point other)
+            return false;
+        
+        return Latitude.Equals(other.Latitude) && Longitude.Equals(other.Longitude);
     }
 
     public override int GetHashCode()
     {
-        throw new NotImplementedException();
+        return GetHashCode.Combine(Latitude, Longitude);
     }
 }
