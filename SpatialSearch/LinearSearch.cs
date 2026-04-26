@@ -60,14 +60,4 @@ public class LinearSearch
         double c = 2 * Math.Atan2(Math.Sqrt(h), Math.Sqrt(1 - h)) * R;
         return c;
     }
-
-    public void ShowList()
-    {
-        ReadFromFile();
-
-        foreach (var point in _allPoints)
-        {
-            System.Console.WriteLine(point);
-        }
-    }
 }
