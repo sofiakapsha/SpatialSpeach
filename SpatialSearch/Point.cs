@@ -6,15 +6,17 @@ public class Point
 {
     public readonly double Latitude;
     public readonly double Longitude;
+    public readonly string RawLine;
     
-    public Point(List<string> entries)
+    public Point(List<string> entries, string rawLine = "")
     {
         if (entries.Count >= 2 && 
-        double.TryParse(entries[0], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture,  out double latitude) &&
-        double.TryParse(entries[1], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out double longitude))
+        double.TryParse(entries[0].Replace(',', '.'), System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture,  out double latitude) &&
+        double.TryParse(entries[1].Replace(',', '.'), System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out double longitude))
         {
             Latitude = latitude;
             Longitude = longitude;
+            RawLine = rawLine;
         }
 
         else
@@ -31,7 +33,7 @@ public class Point
     
     public override string ToString()
     {
-        return $"latitude: {Latitude} | longtitude: {Longitude}";
+        return RawLine;
     }
 
     public override bool Equals(object? obj)
