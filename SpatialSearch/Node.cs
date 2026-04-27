@@ -5,13 +5,11 @@ namespace SpatialSearch;
 public class Node
 {
     public Point Point;
-    public Point Left;
-    public Point Right;
+    public Node? Left;
+    public Node? Right;
 
-    public Node(Point point, Point left, Point right)
+    public Node(Point point)
     {
         Point = point;
-        Left = left;
-        Right = right;
     }
 }
