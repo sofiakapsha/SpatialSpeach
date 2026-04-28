@@ -14,7 +14,7 @@ public class Bagatokutnik
     {
         if (!File.Exists(_filePath))
         {
-            System.Console.WriteLine("File wasn't found.");
+            System.Console.WriteLine("Файл не знайдено.");
             return;
         }
 
@@ -35,7 +35,7 @@ public class Bagatokutnik
 
         if (_allPoints.Count == 0)
         {
-            System.Console.WriteLine("No points.");
+            System.Console.WriteLine("Місць не знайдено.");
             return;
         }
 
@@ -65,11 +65,12 @@ public class Bagatokutnik
 
                 var isIntersecting = false;
 
-                if ((point.Longitude >= lon1 && point.Longitude < lon2) || (point.Longitude >= lon2 && point.Longitude < lon1))
+                if ((point.Latitude >= lat1 && point.Latitude < lat2) ||
+                    (point.Latitude >= lat2 && point.Latitude < lat1))
                 {
-                    double xInt = lat1 + (double)(point.Longitude - lon1) * (lat1 - lat1) / (lon2 - lon1);
+                    double xInt = lon1 + (point.Latitude - lat1) * (lon2 - lon1) / (lat2 - lat1);
 
-                    if (point.Latitude < xInt)
+                    if (point.Longitude < xInt)
                         isIntersecting = true;
                 }
 
@@ -86,7 +87,7 @@ public class Bagatokutnik
     {
         if (_result.Count == 0)
         {
-            System.Console.WriteLine("No points found.");
+            System.Console.WriteLine("Місць не знайдено.");
             return;
         }
 

@@ -12,7 +12,7 @@ public class LinearSearch
     {
         if (!File.Exists(_filePath))
         {
-            System.Console.WriteLine("File wasn't found.");
+            System.Console.WriteLine("Файл не знайдено.");
             return;
         }
 
@@ -39,10 +39,14 @@ public class LinearSearch
             .OrderBy(p => p.distance)
             .ToList();
 
-        foreach (var (point, distance) in filteredPonts)
+        if (filteredPonts.Count > 0)
         {
-            Console.WriteLine($"{point} | distance: {distance:F0}m");
+            foreach (var (point, distance) in filteredPonts)
+            {
+                Console.WriteLine($"{point} | Дистанція: {distance:F0}m");
+            }
         }
+        else Console.WriteLine("Місць не знайдено.");
     }
     
 

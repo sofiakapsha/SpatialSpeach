@@ -17,7 +17,7 @@ public class KdTree
     {
         if (!File.Exists(_filePath))
         {
-            System.Console.WriteLine("File wasn't found.");
+            System.Console.WriteLine("Файл не знайдено.");
             return;
         }
 
@@ -83,7 +83,9 @@ public class KdTree
 
     public void FindPlacesNear(Node? node, double lat, double lon, int depth, int size = 20)
     {
-        var sizeDegrees = size / 111000.0;
+        var sizeDegreesLat = size / 111000.0;
+        var sizeDegreesLon = size / (111000.0 * Math.Cos(double.DegreesToRadians(lat)));
+
 
         if (node == null)
             return;
@@ -114,7 +116,8 @@ public class KdTree
         {
             FindPlacesNear(node.Left, lat, lon, depth + 1, size);
 
-            if (Math.Abs(difference) <= sizeDegrees)
+            var LatOrLon = axis == 0 ? sizeDegreesLat : sizeDegreesLon;
+            if (Math.Abs(difference) <= LatOrLon)
             {
                 FindPlacesNear(node.Right, lat, lon, depth + 1, size);
             }
@@ -123,7 +126,8 @@ public class KdTree
         {
             FindPlacesNear(node.Right, lat, lon, depth + 1, size);
 
-            if (Math.Abs(difference) <= sizeDegrees)
+            var LatOrLon = axis == 0 ? sizeDegreesLat : sizeDegreesLon;
+            if (Math.Abs(difference) <= LatOrLon)
             {
                 FindPlacesNear(node.Left, lat, lon, depth + 1, size);
             }
@@ -134,13 +138,13 @@ public class KdTree
     {
         if (_result.Count == 0)
         {
-            System.Console.WriteLine("No places found.");
+            System.Console.WriteLine("Місць не знайдено.");
             return;
         }
 
         foreach (var point in _result)
         {
-            System.Console.WriteLine($"{point.Item1} | distance: {point.Item2}m");
+            System.Console.WriteLine($"{point.Item1} | Дистанція: {point.Item2}m");
         }
     }
 }

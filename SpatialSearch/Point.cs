@@ -21,7 +21,7 @@ public class Point
 
         else
         {
-            throw new ArgumentException("Invalid entries.");
+            throw new ArgumentException("Неправильний ввід.");
         }
     }
     
@@ -33,7 +33,14 @@ public class Point
     
     public override string ToString()
     {
-        return RawLine;
+        var place = RawLine.Split(';');
+        var lat = place[0];
+        var lon = place[1];
+        var type = place[3];
+
+        var name = place[4];
+        if (!string.IsNullOrEmpty(name)) return $"Координати: ({lat}; {lon}) | Тип: {type} | Назва: {name}";
+        return $"Координати: ({lat}; {lon}) | Тип: {type}";
     }
 
     public override bool Equals(object? obj)

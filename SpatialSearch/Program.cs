@@ -1,31 +1,80 @@
-﻿namespace SpatialSearch;
+﻿using System.Diagnostics;
+
+namespace SpatialSearch;
 
 public static class SpatialSearch
 {
     public static void Main()
     {
-        // var linear = new LinearSearch();
-        // linear.ShowPlacesNear(50.43484, 30.5295, 100);
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-        // System.Console.WriteLine();
-        // System.Console.WriteLine();
+        Console.WriteLine("Введіть координату Latitude: ");
+        Console.WriteLine();
+        var userLat = Console.ReadLine();
 
-        // var kdtree = new KdTree();
-        // kdtree.BuildTree();
+        Console.WriteLine("Введіть координату Longtitude: ");
+        var userLon = Console.ReadLine();
+
+        Console.WriteLine("Введіть радіус: ");
+        var userR = Console.ReadLine();
+
+        double lat = 0, lon = 0;
+        var size = 0;
+
+        try
+        {
+            lat = double.Parse(userLat.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture);
+            lon = double.Parse(userLon.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture);
+            size = int.Parse(userR, System.Globalization.CultureInfo.InvariantCulture);
+            
+            var linear = new LinearSearch();
+            var sw = Stopwatch.StartNew();
+
+            linear.ShowPlacesNear(lat, lon, size);
         
-        // kdtree.FindPlacesNear(kdtree.Root, 50.43484, 30.5295, 0, 100);
+            sw.Stop();
+            Console.WriteLine();
+            Console.WriteLine($"Лінійний пошук: {sw.Elapsed}");
+            Console.WriteLine();
 
-        // kdtree.ShowPlaces();
+            var kdtree = new KdTree();
+        
+            sw.Restart();
+            kdtree.BuildTree();
+            sw.Stop();
+            Console.WriteLine();
+            Console.WriteLine($"Побудова KD-Tree: {sw.Elapsed}");
+            Console.WriteLine();
 
-        var point1 = new Point(48.56989, 39.3401);
-        var point2 = new Point(51.40678, 29.45697);
-        var point3 = new Point(45.34338, 36.23596);
+            sw.Restart();
+            kdtree.FindPlacesNear(kdtree.Root, lat, lon, 0, size);
+            kdtree.ShowPlaces();
+            sw.Stop();
+            
+            Console.WriteLine();
+            Console.WriteLine($"Тільки пошук по KD-Tree: {sw.Elapsed}");
+            Console.WriteLine();
 
-        var polygon = new List<Point> {point1, point2, point3};
+            var point1 = new Point(lat - 0.01, lon - 0.01);
+            var point2 = new Point(lat, lon + 0.01);
+            var point3 = new Point(lat + 0.01, lon);
 
-        var bagatokutnik = new Bagatokutnik();
+            var polygon = new List<Point> {point1, point2, point3};
 
-        bagatokutnik.CheckInBagatokutnik(polygon);
-        bagatokutnik.ShowAllPoint();
+            var bagatokutnik = new Bagatokutnik();
+        
+            sw.Restart();
+            bagatokutnik.CheckInBagatokutnik(polygon);
+            bagatokutnik.ShowAllPoint();
+            sw.Stop();
+
+            Console.WriteLine();
+            Console.WriteLine($"Пошук у довільному багатокутнику: {sw.Elapsed}");
+            Console.WriteLine();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Сталась помилка: {e}");
+        }
     }
 }
