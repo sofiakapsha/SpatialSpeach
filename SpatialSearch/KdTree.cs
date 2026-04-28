@@ -9,28 +9,8 @@ public class KdTree
     public const int K = 2;
 
     private const double R = 6371e3;
-    private List<Point> _allPoints = new List<Point>();
     private List<(Point, double)> _result = new List<(Point, double)>();
-    private const string _filePath = @"../../../Data/ukraine_poi.csv";
-
-    private void ReadFromFile()
-    {
-        if (!File.Exists(_filePath))
-        {
-            System.Console.WriteLine("Файл не знайдено.");
-            return;
-        }
-
-        var lines = File.ReadLines(_filePath, System.Text.Encoding.UTF8);
-
-        foreach (var line in lines)
-        {
-            var parts = line.Split(";").ToList();
-            var point = new Point(parts, line);
-
-            _allPoints.Add(point);
-        }
-    }
+    
     public Node? NewNode(List<Point> points, int depth)
     {
         if (points.Count == 0)
@@ -61,9 +41,7 @@ public class KdTree
 
     public void BuildTree()
     {
-        ReadFromFile();
-
-        Root = NewNode(_allPoints, 0);
+        Root = NewNode(FileReader.allPoints, 0);
     }
 
     private double HaversineCalculate(Point startPoint, Point point)

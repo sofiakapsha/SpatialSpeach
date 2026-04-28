@@ -4,36 +4,13 @@ namespace SpatialSearch;
 
 public class LinearSearch
 {
-    private List<Point> _allPoints = new List<Point>();
-    private const string _filePath = @"../../../Data/ukraine_poi.csv";
     private const double R = 6371e3;
-
-    private void ReadFromFile()
-    {
-        if (!File.Exists(_filePath))
-        {
-            System.Console.WriteLine("Файл не знайдено.");
-            return;
-        }
-
-        var lines = File.ReadLines(_filePath, System.Text.Encoding.UTF8);
-
-        foreach (var line in lines)
-        {
-            var parts = line.Split(";").ToList();
-            var point = new Point(parts, line);
-
-            _allPoints.Add(point);
-        }
-    }
-
+    
     public void ShowPlacesNear(double lat, double lon, int size = 20)
     {
-        ReadFromFile();
-        
         var startPoint = new Point(lat, lon);
         
-        var filteredPonts = _allPoints
+        var filteredPonts = FileReader.allPoints
             .Select(point => (point, distance: HaversineCalculate(startPoint, point)))
             .Where(p => p.distance <= size)
             .OrderBy(p => p.distance)

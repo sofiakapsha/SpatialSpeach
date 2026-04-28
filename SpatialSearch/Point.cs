@@ -6,7 +6,7 @@ public class Point
 {
     public readonly double Latitude;
     public readonly double Longitude;
-    public readonly string RawLine;
+    private readonly string RawLine;
     
     public Point(List<string> entries, string rawLine = "")
     {
