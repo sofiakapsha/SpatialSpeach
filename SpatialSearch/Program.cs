@@ -10,7 +10,6 @@ public static class SpatialSearch
         FileReader.ReadFromFile();
 
         Console.WriteLine("Введіть координату Latitude: ");
-        Console.WriteLine();
         var userLat = Console.ReadLine();
 
         Console.WriteLine("Введіть координату Longtitude: ");
@@ -18,9 +17,6 @@ public static class SpatialSearch
 
         Console.WriteLine("Введіть радіус: ");
         var userR = Console.ReadLine();
-        
-        Console.WriteLine("Введіть кількість вершин багатокутника:");
-        var userE = Console.ReadLine();
 
         double lat = 0, lon = 0;
         var size = 0;
@@ -30,7 +26,6 @@ public static class SpatialSearch
             lat = double.Parse(userLat.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture);
             lon = double.Parse(userLon.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture);
             size = int.Parse(userR, System.Globalization.CultureInfo.InvariantCulture);
-            var e = int.Parse(userE, System.Globalization.CultureInfo.InvariantCulture);
             
             var linear = new LinearSearch();
             var sw = Stopwatch.StartNew();
@@ -59,6 +54,11 @@ public static class SpatialSearch
             Console.WriteLine();
             Console.WriteLine($"Тільки пошук по KD-Tree: {sw.Elapsed}");
             Console.WriteLine();
+            
+            Console.WriteLine("Введіть кількість вершин багатокутника:");
+            var userE = Console.ReadLine();
+            
+            var e = int.Parse(userE, System.Globalization.CultureInfo.InvariantCulture);
 
             var polygon = new List<Point>();
             for (int i = 0; i < e; i++)
