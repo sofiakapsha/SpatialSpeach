@@ -1,93 +1,50 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/4H-yRkma)
-###### Практична робота №4
-## Магазини, дерева та геометрія
+# Spatial Search — Linear Scan vs K-d Tree (C#)
 
-### Мета роботи:
-Попрактикуватись в проектуванні більш складних дерев, реалізувати декілька геометрічних алгоритмів, повторити обробку текстових файлів.
+A console application that searches for points of interest within a given radius, 
+comparing a brute-force linear approach with an optimized K-d Tree implementation.
 
-## Що будемо робити?
-Реалізовувати функціонал, аналогічний натисканню кнопки "шукати в цій области" при пошуку чогось корисного на Google Maps - спочатку очевидним способом (лінійно, перебором), а потім оптимізованим (використовуючи дерево)
-![](./Examples/coffee.png)
+## Features
 
-## Порядок виконання
-### Лінійне рішення
+- **Linear search** — scans all points (OpenStreetMap POI data for Ukraine: 
+  coordinates, type, name) and calculates the distance to a given point using 
+  the Haversine formula (accounts for Earth's curvature).
+- **K-d Tree** — builds a binary space-partitioning tree by recursively splitting 
+  the point set along latitude/longitude medians, enabling much faster range queries.
+- **Polygon search (Bagatokutnik)** — extends the radius search to arbitrary 
+  (not necessarily convex) polygons, not just circles.
+- **Performance benchmarking** — measures and compares execution time of the 
+  linear scan vs. the K-d Tree query using `Stopwatch`.
+- **Custom equality/hashing for points** — implemented `ToString`, `Equals`, 
+  and `GetHashCode` on the `Point` class for coordinate-based comparisons 
+  and hash-set usage.
 
-Скачайте та подивіться [файл з данними](./SpatialSearch/Data/ukraine_poi.csv) - це скачані та попередньо оброблені точки з [OpenStreetMap](https://www.openstreetmap.org/#map=6/48.537/31.168). Кожна точка - певний обʼєкт в Україні - його координати (широта та довгота), тип та назва.
+## Tech Stack
 
-Напишіть просту консольну програму на C#, що приймає від користувача широту та довготу точки та радіус кола в якому слід дивитись. Програма має вивести всі точки, що потрапляють в цей радіус. Приклад програми:
+C#, .NET
+
+## How to Run
+
+```bash
+dotnet run --project SpatialSearch -- --db=ukraine_poi.csv --lat=50.4501 --long=30.5234 --size=20
 ```
-> map_search.exe --db=ukraine_poi.csv --lat=30.212, --long=35.872 --size=20
-Next points were found in given area:
-50,60659;30,45436;shop;car;Авто Масло;;
-50,44075;30,55263;leisure;ice_rink;Льодовий клуб «Піонер»;;
-48,89283;22,40971;tourism;information;Malá Ubľa;;
-```
-На цьому етапі розвʼяжіть задачу перебором - продивість кожну точку, визначте відстань до заданої точки та виведіть її на екран якщо відстань менша за задану.
 
-Зверніть увагу, що координати точки - це широта та довгота, які визначають положення точки на земній кулі, а не на площині. Одному градусу широти на екваторі відповідає значно більше кілометрів відстані, ніж одному градусу біля полюсу, тому для визначення відстані між точками за відомими координатами потрібно розібратись з такою штукою як [гаверсинус](https://uk.wikipedia.org/wiki/%D0%A4%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B0_%D0%B3%D0%B0%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D0%BD%D1%83%D1%81%D0%B0). [Ось тут](https://www.movable-type.co.uk/scripts/latlong.html) можна отримати формулу та перевірити правільність власних обчислень
+The program outputs all points found within the given radius and prints the 
+elapsed time for both the linear and K-d Tree search methods.
 
-Для того щоб заміряти ефективність, додайте до свого коду наступний:
-```C#
- var sw = new Stopwatch();
- sw.Start();
- // here goes code you want to measure
- sw.Stop();
- Console.WriteLine($"Elapsed time: {sw.Elapsed}");
-```
-`Stopwatch` дозволяє виміряти час виконання коду, що виконується між викликами методів `Start()` та `Stop()`. Виміряйте час, який займає повний перебір усіх точок.
+## Project Structure
 
-### Оптимізоване рішення
-Час переходити до оптимізації! 
+- `Point.cs` — point representation with custom equality and hashing
+- `LinearSearch.cs` — brute-force search implementation
+- `KdTree.cs` — K-d Tree construction and range query logic
+- `Bagatokutnik.cs` — polygon-based search extension
 
-Тут у вас є два варіанти:
-- Перший - використати `K-d` дерево (було розібрано на лекції). 
-- Другий - розібратися з `R-tree` самостійно. 
+## Team Project
 
-Детально про `R-tree` можна прочитати на [вікі](https://en.wikipedia.org/wiki/R-tree). Повноцінна варіація цієї структури передбачає досить складний варіант розбиття простору, ви ж можете використати просте ділення навпіл, як в `K-d` дереві. 
+This project was completed in pairs as part of the CS210 Algorithms for Engineers course.
 
+**My contribution (sofiiakapsha):** linear search implementation, distance calculation 
+fixes, polygon search optimization, console interface, performance measurement setup, 
+bug fixes across calculations.
 
-Побудова `R-tree` може виглядати наступним чином:
-1. Визначте прямокутник, який містить всі точки з множини (технічно, це не зовсім прямокутник, бо він описує частину поверхні кулі, але ми можемо використати таке спрощення) - для цього знайдіть мінімальну та максимальну довготу та широту серед усіх точок. Створіть кореневий вузол дерева, що містить інформацію про цей прямокутник.
-   ![](./Examples/ukr_rectangle.png)
-2. Знайдіть медіану всіх точок всередині прямокутника за широтою або довготою (тобто значення, при якому половина точок мають більше значення, а половина - менше). Розділіть прямокутник на два по цій лінії, створіть вузли дерева та призначте їх нащадками вершини з попереднього пункту.
-3. Для кожного з прямокутників з пункту 2 повторіть процес, тільки змінивши вісь - якщо попередньо ви ділили по довготі, тепер діліть по широті та навпаки
-4. Повторюйте ділення поки всередині одного прямокутника не лишиться невелика кількість точок (наприклад, 10 чи 100).
-   У підсумку, ви матимете бінарне дерево, де кожна віршина містить прямокутник, а листя - ще й набір точок
-
-Пошук у такому дереві:
-1. Для того щоб спростити обчислення, та звести їх до відомої вам формули перетину двох прямокутників, слід знайти прямокутник, що описує коло, в якому ми виконуємо пошук. В цьому вам допоможе розділ ["destination point given distance and bearing from start point"](https://www.movable-type.co.uk/scripts/latlong.html)
-2. Перевірте, чи перетинається прямокутник з коренем дерева. Якщо ні - точок немає, якщо так, перевірте рекурсивно нащадків. Кожен раз, спускаючись на рівень нижче, відкидайте прямокутники що не перетинаються з необхідним.
-3. Якщо при спуску в дерево ви знайшли вершину, що вже не містить нащадків, переберіть всі точки в ній і перевірте їх відстань.
-
-Замірте окремо час побудови дерева, і окремо - час виконання запиту у цьому дереві. Порівняйте час виконання з перебором, які можна зробити висновки?
-
-
->[!Note]
-> В проєкті у вас вже присуній клас **Point.cs** в якому вам потрібно дописати 3 методи: 
-> 
-> `.ToString` - для прінта,  
-> `.Equals` - для порівнянь двох точок за кординатами (потрібно саме за кординатами) та  
-> `.GetHashCode` - для хешування точок при додаванні у hash-set
-
-## Не тільки колом єдиним
-
-Задача "пошук усіх точок в радіусі R від заданої" - лиш частковий випадок ширшої задачі, коли пошук ведеться у довільному багатокутнику (навіть не обовʼязково опуклому!). Розвʼязання саме такої постановки задачі передбачається у деяких додаткових завданнях. 
-
-## Контрольні питання
-- Як працюють Kd-дерева? В чому між ними різниця?
-- Який головний недолік бінарного дерева пошуку?
-- Як можна визначити за даними координатами, чи перетинаються прямокутники?
-
-## Оцінювання
-
-Максимальний бал - 13 (+4 додаткових):
-- Реалізація простої, лінійної схеми пошуку - 3 бали;
-- Побудова R-tree / K-d tree - 2 бали;
-- Пошук у дереві - 2 бали;
-- Теоретичні питання - 6 балів;
-
-Додаткові завдання (у сумі можна набрати до 4 балів, навіть якщо виконали більше завдань):
-- Реалізація простого варіанту пошуку у довільному опуклому багатокутнику - +1 бал
-- Реалізація простого варіанту пошуку у довільному (не обовʼязково опуклому) багатокутнику без самоперетинів - +2 бали 
-- Візуалізація розбиття простору і процесу пошуку у Kd-дереві / R-дереві - +2 бали 
-- Реалізація _ефективного_ (за допомогою K-d tree чи R-tree) способу пошуку у довільному багатокутнику - +3 бали
+**Partner's contribution (sofiialavrynenko25):** K-d Tree construction, `Node` class, 
+`Point` class methods, initial polygon search logic.
